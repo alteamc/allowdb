@@ -54,6 +54,8 @@ public final class MessagesConfig {
         this.commandUsageNoArgs = Objects.requireNonNull(conf.getString("command-usage-no-args"));
         this.commandUsageParent = Objects.requireNonNull(conf.getString("command-usage-parent"));
         this.commandUsageParentHint = Objects.requireNonNull(conf.getString("command-usage-parent-hint"));
+
+        Messages.init(this);
     }
 
     public @NotNull String getErrorMessageFormat() {

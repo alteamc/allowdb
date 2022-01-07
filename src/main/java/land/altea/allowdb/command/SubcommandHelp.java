@@ -1,8 +1,8 @@
 package land.altea.allowdb.command;
 
-import land.altea.allowdb.AllowDbPlugin;
 import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.util.CommandUtil;
+import land.altea.allowdb.config.Messages;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +18,6 @@ public final class SubcommandHelp implements CommandHandler {
     @Override
     public void invoke(@NotNull CommandSender sender, @NotNull String[] args) throws InsufficientPermissionsException {
         CommandUtil.requirePerm(sender, "allowdb.command.help");
-        sender.sendMessage(String.format(AllowDbPlugin.getInstance().getMessages().getAvailableCommands(), String.join(", ", subcommands)));
+        sender.sendMessage(String.format(Messages.getAvailableCommands(), String.join(", ", subcommands)));
     }
 }

@@ -1,6 +1,5 @@
 package land.altea.allowdb;
 
-import land.altea.allowdb.config.MessagesConfig;
 import land.altea.allowdb.storage.AllowList;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
@@ -17,7 +16,7 @@ public final class AllowDB {
 
     }
 
-    void init(@NotNull AllowList _allowList) {
+    static void init(@NotNull AllowList _allowList) {
         allowList = _allowList;
     }
 

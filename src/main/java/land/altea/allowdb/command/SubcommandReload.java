@@ -3,6 +3,7 @@ package land.altea.allowdb.command;
 import land.altea.allowdb.AllowDbPlugin;
 import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.util.CommandUtil;
+import land.altea.allowdb.config.Messages;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,9 +17,9 @@ public final class SubcommandReload implements CommandHandler {
         AllowDbPlugin.getInstance().reload();
         // todo: this is a hack, need to make something fancier than this
         if (!AllowDbPlugin.getInstance().isEnabled()) {
-            sender.sendMessage(AllowDbPlugin.getInstance().getMessages().getReloadFailed());
+            sender.sendMessage(Messages.getReloadFailed());
         } else {
-            sender.sendMessage(AllowDbPlugin.getInstance().getMessages().getConfigDbReloaded());
+            sender.sendMessage(Messages.getConfigDbReloaded());
         }
     }
 

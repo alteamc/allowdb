@@ -44,9 +44,11 @@ public final class PluginConfig {
         } else {
             this.messageNotListed = messageNotListed;
         }
+
+        Config.init(this);
     }
 
-    public String getLocale() {
+    public @NotNull String getLocale() {
         return locale;
     }
 

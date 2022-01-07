@@ -6,6 +6,7 @@ import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import land.altea.allowdb.AllowDbPlugin;
+import land.altea.allowdb.config.Config;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
 import land.altea.allowdb.storage.exception.StorageException;
@@ -28,7 +29,7 @@ public final class AllowList {
         Dao<AllowRecord, UUID> dao;
 
         try {
-            conn = new JdbcPooledConnectionSource(AllowDbPlugin.getInstance().getPluginConfig().getStorageUrl());
+            conn = new JdbcPooledConnectionSource(Config.getStorageUrl());
         } catch (SQLException e) {
             AllowDbPlugin a = AllowDbPlugin.getInstance();
             a.getLogger().log(Level.SEVERE, "Failed to open connection source.", e);

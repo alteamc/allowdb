@@ -5,7 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import land.altea.allowdb.AllowDB;
+import land.altea.allowdb.AllowDbPlugin;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
 import land.altea.allowdb.storage.exception.StorageException;
@@ -28,9 +28,9 @@ public final class AllowList {
         Dao<AllowRecord, UUID> dao;
 
         try {
-            conn = new JdbcPooledConnectionSource(AllowDB.getInstance().getPluginConfig().getStorageUrl());
+            conn = new JdbcPooledConnectionSource(AllowDbPlugin.getInstance().getPluginConfig().getStorageUrl());
         } catch (SQLException e) {
-            AllowDB a = AllowDB.getInstance();
+            AllowDbPlugin a = AllowDbPlugin.getInstance();
             a.getLogger().log(Level.SEVERE, "Failed to open connection source.", e);
             a.getServer().getPluginManager().disablePlugin(a);
 
@@ -45,7 +45,7 @@ public final class AllowList {
         try {
             dao = DaoManager.createDao(conn, AllowRecord.class);
         } catch (SQLException e) {
-            AllowDB a = AllowDB.getInstance();
+            AllowDbPlugin a = AllowDbPlugin.getInstance();
             a.getLogger().log(Level.SEVERE, "Failed to prepare DAO.", e);
             a.getServer().getPluginManager().disablePlugin(a);
 
@@ -62,7 +62,7 @@ public final class AllowList {
                 TableUtils.createTableIfNotExists(conn, AllowRecord.class);
             }
         } catch (SQLException e) {
-            AllowDB a = AllowDB.getInstance();
+            AllowDbPlugin a = AllowDbPlugin.getInstance();
             a.getLogger().log(Level.SEVERE, "Failed to create database table.", e);
             a.getServer().getPluginManager().disablePlugin(a);
         }
@@ -77,7 +77,7 @@ public final class AllowList {
             try {
                 conn.close();
             } catch (Exception e) {
-                AllowDB.getInstance().getLogger().log(Level.SEVERE, "Failed to close connection source.", e);
+                AllowDbPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to close connection source.", e);
             }
         }
     }
@@ -142,7 +142,7 @@ public final class AllowList {
     }
 
     public void remove(@NotNull String nickname) throws StorageException, NoSuchProfileException {
-        Player player = AllowDB.getInstance().getServer().getOnlinePlayers().stream()
+        Player player = AllowDbPlugin.getInstance().getServer().getOnlinePlayers().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(nickname)).findFirst().orElse(null);
 
         UUID uuid;

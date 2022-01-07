@@ -1,9 +1,8 @@
 package land.altea.allowdb.command;
 
-import land.altea.allowdb.AllowDB;
+import land.altea.allowdb.AllowDbPlugin;
 import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.exception.InvalidUsageException;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -32,13 +31,13 @@ public final class CommandAllowDb implements TabExecutor {
                 try {
                     handler.invoke(sender, Arrays.copyOfRange(args, 1, args.length));
                 } catch (InsufficientPermissionsException e) {
-                    sender.sendMessage(AllowDB.getInstance().getMessages().getInsufficientPermissions());
+                    sender.sendMessage(AllowDbPlugin.getInstance().getMessages().getInsufficientPermissions());
                 } catch (InvalidUsageException e) {
                     String usage = handler.getUsage();
                     if (usage != null) {
-                        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageArgs(), label, args[0], usage));
+                        sender.sendMessage(String.format(AllowDbPlugin.getInstance().getMessages().getCommandUsageArgs(), label, args[0], usage));
                     } else {
-                        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageNoArgs(), label, args[0]));
+                        sender.sendMessage(String.format(AllowDbPlugin.getInstance().getMessages().getCommandUsageNoArgs(), label, args[0]));
                     }
                 }
 
@@ -46,8 +45,8 @@ public final class CommandAllowDb implements TabExecutor {
             }
         }
 
-        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageParent(), label));
-        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageParentHint(), label));
+        sender.sendMessage(String.format(AllowDbPlugin.getInstance().getMessages().getCommandUsageParent(), label));
+        sender.sendMessage(String.format(AllowDbPlugin.getInstance().getMessages().getCommandUsageParentHint(), label));
         return true;
     }
 

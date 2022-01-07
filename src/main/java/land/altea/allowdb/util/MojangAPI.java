@@ -1,6 +1,6 @@
 package land.altea.allowdb.util;
 
-import land.altea.allowdb.AllowDB;
+import land.altea.allowdb.AllowDbPlugin;
 import me.kbrewster.exceptions.APIException;
 import me.kbrewster.exceptions.InvalidPlayerException;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public final class MojangAPI {
         } catch (InvalidPlayerException e) {
             return null;
         } catch (IOException | APIException e) {
-            AllowDB.getInstance().getLogger().log(Level.SEVERE, "Failed to request UUID from Mojang API.", e);
+            AllowDbPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to request UUID from Mojang API.", e);
             return null;
         }
     }
@@ -32,7 +32,7 @@ public final class MojangAPI {
         } catch (InvalidPlayerException e) {
             return null;
         } catch (IOException | APIException e) {
-            AllowDB.getInstance().getLogger().log(Level.SEVERE, "Failed to request username from Mojang API.", e);
+            AllowDbPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to request username from Mojang API.", e);
             return null;
         }
     }

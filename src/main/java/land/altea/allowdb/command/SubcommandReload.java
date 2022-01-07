@@ -1,6 +1,6 @@
 package land.altea.allowdb.command;
 
-import land.altea.allowdb.AllowDB;
+import land.altea.allowdb.AllowDbPlugin;
 import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.util.CommandUtil;
 import org.bukkit.command.CommandSender;
@@ -13,12 +13,12 @@ public final class SubcommandReload implements CommandHandler {
     @Override
     public void invoke(@NotNull CommandSender sender, @NotNull String[] args) throws InsufficientPermissionsException {
         CommandUtil.requirePerm(sender, "allowdb.command.reload");
-        AllowDB.getInstance().reload();
+        AllowDbPlugin.getInstance().reload();
         // todo: this is a hack, need to make something fancier than this
-        if (!AllowDB.getInstance().isEnabled()) {
-            sender.sendMessage(AllowDB.getInstance().getMessages().getReloadFailed());
+        if (!AllowDbPlugin.getInstance().isEnabled()) {
+            sender.sendMessage(AllowDbPlugin.getInstance().getMessages().getReloadFailed());
         } else {
-            sender.sendMessage(AllowDB.getInstance().getMessages().getConfigDbReloaded());
+            sender.sendMessage(AllowDbPlugin.getInstance().getMessages().getConfigDbReloaded());
         }
     }
 

@@ -1,6 +1,6 @@
 package land.altea.allowdb.config;
 
-import land.altea.allowdb.AllowDB;
+import land.altea.allowdb.AllowDbPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +10,7 @@ public final class PluginConfig {
     private final @NotNull String messageNotListed;
 
     public PluginConfig(@NotNull FileConfiguration conf) {
-        AllowDB a = AllowDB.getInstance();
+        AllowDbPlugin a = AllowDbPlugin.getInstance();
 
         String locale = conf.getString("locale");
         if (locale == null) {

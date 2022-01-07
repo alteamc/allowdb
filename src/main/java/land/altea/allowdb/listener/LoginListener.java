@@ -17,7 +17,6 @@ public final class LoginListener implements Listener {
         try {
             if (!AllowDB.getInstance().getList().isAllowed(e.getPlayer())) {
                 e.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, AllowDB.getInstance().getPConfig().getMessageNotListed());
-                return;
             }
         } catch (StorageException ex) {
             AllowDB.getInstance().getLogger().log(Level.SEVERE, "Failed to lookup account in the allowlist.", e);

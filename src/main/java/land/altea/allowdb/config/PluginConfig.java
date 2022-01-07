@@ -4,12 +4,24 @@ import land.altea.allowdb.AllowDB;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public final class Config {
+public final class PluginConfig {
+    private final @NotNull String locale;
     private final @NotNull String storageUrl;
     private final @NotNull String messageNotListed;
 
-    public Config(@NotNull FileConfiguration conf) {
+    public PluginConfig(@NotNull FileConfiguration conf) {
         AllowDB a = AllowDB.getInstance();
+
+        String locale = conf.getString("locale");
+        if (locale == null) {
+            a.getLogger().severe("locale is not set!");
+            this.locale = "en";
+        } else if (locale.isBlank()) {
+            a.getLogger().severe("locale is blank.");
+            this.locale = "en";
+        } else {
+            this.locale = locale;
+        }
 
         String storageUrl = conf.getString("storage.url");
         if (storageUrl == null) {
@@ -32,6 +44,10 @@ public final class Config {
         } else {
             this.messageNotListed = messageNotListed;
         }
+    }
+
+    public String getLocale() {
+        return locale;
     }
 
     public @NotNull String getStorageUrl() {

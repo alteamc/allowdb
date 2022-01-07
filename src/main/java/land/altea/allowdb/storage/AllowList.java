@@ -28,7 +28,7 @@ public final class AllowList {
         Dao<AllowRecord, UUID> dao;
 
         try {
-            conn = new JdbcPooledConnectionSource(AllowDB.getInstance().getPConfig().getStorageUrl());
+            conn = new JdbcPooledConnectionSource(AllowDB.getInstance().getPluginConfig().getStorageUrl());
         } catch (SQLException e) {
             AllowDB a = AllowDB.getInstance();
             a.getLogger().log(Level.SEVERE, "Failed to open connection source.", e);

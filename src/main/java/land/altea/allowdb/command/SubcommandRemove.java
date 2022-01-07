@@ -25,26 +25,26 @@ public final class SubcommandRemove implements CommandHandler {
 
                 try {
                     AllowDB.getInstance().getList().remove(uuid);
-                    sender.sendMessage("Player with UUID " + args[0] + " is no longer allowed in.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getPlayerUuidRemoved(), args[0]));
                 } catch (NoSuchProfileException e) {
-                    sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "player with UUID " + args[0] + " is not on the allowlist.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getPlayerUuidNotOnList(), args[0])));
                 }
             } catch (IllegalArgumentException e) {
                 try {
                     AllowDB.getInstance().getList().remove(args[0]);
-                    sender.sendMessage("Player " + args[0] + " is no longer allowed in.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getPlayerNickRemoved(), args[0]));
                 } catch (NoSuchProfileException ex) {
-                    sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "player " + args[0] + " is not on the allowlist.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getPlayerNickNotOnList(), args[0])));
                 }
             }
 
         } catch (StorageException e) {
-            sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "internal storage failure.");
+            sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getInternalStorageError(), args[0])));
         }
     }
 
     @Override
     public @NotNull String getUsage() {
-        return "<username or UUID>";
+        return AllowDB.getInstance().getMessages().getSubcommandRemoveUsage();
     }
 }

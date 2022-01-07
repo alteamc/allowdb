@@ -4,11 +4,10 @@ import land.altea.allowdb.AllowDB;
 import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.exception.InvalidUsageException;
 import land.altea.allowdb.command.util.CommandUtil;
-import land.altea.allowdb.util.UuidUtil;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
 import land.altea.allowdb.storage.exception.StorageException;
-import org.bukkit.ChatColor;
+import land.altea.allowdb.util.UuidUtil;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,30 +25,30 @@ public final class SubcommandAdd implements CommandHandler {
 
                 try {
                     AllowDB.getInstance().getList().add(uuid);
-                    sender.sendMessage("Player with UUID " + args[0] + " is now allowed in.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getPlayerUuidAdded(), args[0]));
                 } catch (NoSuchProfileException e) {
-                    sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "player with UUID " + args[0] + " does not exist.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getPlayerUuidNonexistent(), args[0])));
                 } catch (AlreadyAllowedException e) {
-                    sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "player with UUID " + args[0] + " is already on the allowlist.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getPlayerUuidAlreadyAdded(), args[0])));
                 }
             } catch (IllegalArgumentException e) {
                 try {
                     AllowDB.getInstance().getList().add(args[0]);
-                    sender.sendMessage("Player " + args[0] + " is now allowed in.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getPlayerNickAdded(), args[0]));
                 } catch (NoSuchProfileException ex) {
-                    sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "player " + args[0] + " does not exist.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getPlayerNickNonexistent(), args[0])));
                 } catch (AlreadyAllowedException ex) {
-                    sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "player " + args[0] + " is already on the allowlist.");
+                    sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getPlayerNickAlreadyAdded(), args[0])));
                 }
             }
 
         } catch (StorageException e) {
-            sender.sendMessage(ChatColor.RED + "Error: " + ChatColor.DARK_RED + "internal storage failure.");
+            sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getErrorMessageFormat(), String.format(AllowDB.getInstance().getMessages().getInternalStorageError(), args[0])));
         }
     }
 
     @Override
     public @NotNull String getUsage() {
-        return "<username or UUID>";
+        return AllowDB.getInstance().getMessages().getSubcommandAddUsage();
     }
 }

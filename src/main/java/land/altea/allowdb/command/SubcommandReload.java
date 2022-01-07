@@ -14,7 +14,12 @@ public final class SubcommandReload implements CommandHandler {
     public void invoke(@NotNull CommandSender sender, @NotNull String[] args) throws InsufficientPermissionsException {
         CommandUtil.requirePerm(sender, "allowdb.command.reload");
         AllowDB.getInstance().reload();
-        sender.sendMessage("AllowDB configuration and database reloaded.");
+        // todo: this is a hack, need to make something fancier than this
+        if (!AllowDB.getInstance().isEnabled()) {
+            sender.sendMessage(AllowDB.getInstance().getMessages().getReloadFailed());
+        } else {
+            sender.sendMessage(AllowDB.getInstance().getMessages().getConfigDbReloaded());
+        }
     }
 
     @Override

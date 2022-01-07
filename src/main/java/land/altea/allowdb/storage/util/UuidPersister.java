@@ -29,12 +29,12 @@ public final class UuidPersister extends BaseDataType {
     }
 
     @Override
-    public Object sqlArgToJava(FieldType fieldType, Object sqlArg, int columnPos) throws SQLException {
+    public Object sqlArgToJava(FieldType fieldType, Object sqlArg, int columnPos) {
         return UUID.nameUUIDFromBytes((byte[]) sqlArg);
     }
 
     @Override
-    public Object javaToSqlArg(FieldType fieldType, Object javaObject) throws SQLException {
+    public Object javaToSqlArg(FieldType fieldType, Object javaObject) {
         ByteBuffer b = ByteBuffer.allocate(16);
         b.putLong(((UUID) javaObject).getMostSignificantBits());
         b.putLong(((UUID) javaObject).getLeastSignificantBits());

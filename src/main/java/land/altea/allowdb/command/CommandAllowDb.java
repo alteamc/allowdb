@@ -1,5 +1,6 @@
 package land.altea.allowdb.command;
 
+import land.altea.allowdb.AllowDB;
 import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.exception.InvalidUsageException;
 import org.bukkit.ChatColor;
@@ -31,18 +32,22 @@ public final class CommandAllowDb implements TabExecutor {
                 try {
                     handler.invoke(sender, Arrays.copyOfRange(args, 1, args.length));
                 } catch (InsufficientPermissionsException e) {
-                    sender.sendMessage(ChatColor.DARK_RED + "You don't have a permission to do that.");
+                    sender.sendMessage(AllowDB.getInstance().getMessages().getInsufficientPermissions());
                 } catch (InvalidUsageException e) {
                     String usage = handler.getUsage();
-                    sender.sendMessage("Usage: /" + label + " " + args[0] + (usage != null ? " " + usage : ""));
+                    if (usage != null) {
+                        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageArgs(), label, args[0], usage));
+                    } else {
+                        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageNoArgs(), label, args[0]));
+                    }
                 }
 
                 return true;
             }
         }
 
-        sender.sendMessage("Usage: /" + label + " <command> [arguments]");
-        sender.sendMessage("Type /" + label + " help to get list of available commands.");
+        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageParent(), label));
+        sender.sendMessage(String.format(AllowDB.getInstance().getMessages().getCommandUsageParentHint(), label));
         return true;
     }
 

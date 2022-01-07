@@ -3,21 +3,28 @@ package land.altea.allowdb;
 import com.j256.ormlite.logger.LogBackendType;
 import com.j256.ormlite.logger.LoggerFactory;
 import land.altea.allowdb.command.CommandAllowDb;
-import land.altea.allowdb.config.Config;
+import land.altea.allowdb.config.MessagesConfig;
+import land.altea.allowdb.config.PluginConfig;
 import land.altea.allowdb.listener.LoginListener;
 import land.altea.allowdb.storage.AllowList;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public final class AllowDB extends JavaPlugin {
     @SuppressWarnings("NotNullFieldNotInitialized")
     private static @NotNull AllowDB I;
 
     @SuppressWarnings("NotNullFieldNotInitialized")
-    private @NotNull Config config;
+    private @NotNull PluginConfig config;
+    @SuppressWarnings("NotNullFieldNotInitialized")
+    private @NotNull MessagesConfig messages;
     @SuppressWarnings("NotNullFieldNotInitialized")
     private @NotNull AllowList list;
 
@@ -49,7 +56,13 @@ public final class AllowDB extends JavaPlugin {
     public void reloadConfig() {
         saveDefaultConfig();
         super.reloadConfig();
-        config = new Config(getConfig());
+        config = new PluginConfig(getConfig());
+
+        try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getResource("messages_" + config.getLocale() + ".yml")))) {
+            messages = new MessagesConfig(YamlConfiguration.loadConfiguration(reader));
+        } catch (IOException e) {
+            getLogger().log(Level.SEVERE, "Failed to load messages file.", e);
+        }
     }
 
     public void reload() {
@@ -62,8 +75,12 @@ public final class AllowDB extends JavaPlugin {
         return I;
     }
 
-    public @NotNull Config getPConfig() {
+    public @NotNull PluginConfig getPluginConfig() {
         return config;
+    }
+
+    public @NotNull MessagesConfig getMessages() {
+        return messages;
     }
 
     public @NotNull AllowList getList() {

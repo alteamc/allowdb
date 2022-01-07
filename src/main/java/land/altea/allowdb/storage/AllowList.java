@@ -6,11 +6,11 @@ import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import land.altea.allowdb.AllowDB;
-import land.altea.allowdb.util.MojangAPI;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
 import land.altea.allowdb.storage.exception.StorageException;
 import land.altea.allowdb.storage.model.AllowRecord;
+import land.altea.allowdb.util.MojangAPI;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,12 +113,6 @@ public final class AllowList {
 
     private void createRecord(@NotNull UUID uuid, @NotNull String nickname) throws StorageException, AlreadyAllowedException {
         try {
-            updateConflictingNickname(nickname);
-        } catch (SQLException e) {
-            throw new StorageException("Failed to update possibly conflicting nicknames.", e);
-        }
-
-        try {
             dao.create(new AllowRecord(uuid, nickname));
         } catch (SQLException e) {
             if (e.getCause() != null && e.getCause() instanceof SQLIntegrityConstraintViolationException) {
@@ -163,13 +157,5 @@ public final class AllowList {
         }
 
         remove(uuid);
-    }
-
-    private void updateConflictingNickname(@NotNull String nickname) throws SQLException {
-        AllowRecord record = dao.queryBuilder().where().eq("username", nickname).queryForFirst();
-        if (record != null) {
-            record.setUsername(MojangAPI.getNickname(record.getUuid()));
-            dao.update(record);
-        }
     }
 }

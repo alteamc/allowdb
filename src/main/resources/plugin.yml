@@ -5,3 +5,40 @@ main:    "land.altea.allowdb.AllowDB"
 description: "MySQL-powered allowlists for your server."
 author:      "Altea"
 api-version: "1.18"
+
+permissions:
+  allowdb.*:
+    description: "Grants full access to all commands of AllowDB."
+    children:
+      allowdb.command:   true
+      allowdb.command.*: true
+
+  allowdb.command:
+    description: "Grants access to /allowdb command (without arguments.)"
+
+  allowdb.command.*:
+    description: "Grants access to all commands under /allowdb."
+    children:
+      allowdb.command.help:   true
+      allowdb.command.reload: true
+      allowdb.command.add:    true
+      allowdb.command.remove: true
+
+  allowdb.command.help:
+    description: "Grants access to /allowdb help command."
+
+  allowdb.command.reload:
+    description: "Grants access to /allowdb reload command."
+
+  allowdb.command.add:
+    description: "Grants access to /allowdb add command."
+
+  allowdb.command.remove:
+    description: "Grants access to /allowdb remove command."
+
+commands:
+  allowdb:
+    aliases:           [ adb, whitelist ]
+    description:        "Manage AllowDB configuration and allowlist."
+    permission:         "allowdb.command"
+    permission-message: "§4You don't have a permission to do that."

@@ -1,0 +1,7 @@
+name:    "AllowDB"
+version: "1.0.0"
+main:    "land.altea.allowdb.AllowDB"
+
+description: "MySQL-powered allowlists for your server."
+author:      "Altea"
+api-version: "1.18"

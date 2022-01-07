@@ -46,4 +46,4 @@ tasks.register<com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowR
     prefix = "land.altea.allowdb.dependency"
 }
 
-//tasks.shadowJar.get().dependsOn(tasks["autoRelocateDependencies"])
+tasks.shadowJar.get().dependsOn(tasks["autoRelocateDependencies"])

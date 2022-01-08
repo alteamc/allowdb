@@ -30,4 +30,5 @@ jobs:
         arguments: build
     - name: Create release
       uses: softprops/action-gh-release@v1
-      
+      with:
+        files: build/libs/*.jar

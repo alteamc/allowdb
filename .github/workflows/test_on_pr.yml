@@ -8,11 +8,6 @@
 name: Run tests on PR
 
 on:
-  push:
-    branches: [ develop ]    
-    paths:
-      - '**.java'
-      - '*.gradle.kts'
   pull_request:
     branches: [ develop ]
     paths:

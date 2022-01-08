@@ -21,5 +21,4 @@ command-usage-args:        "Использование: §l§b/%1$s %2$s %3$s§r
 command-usage-no-args:     "Использование: §l§b/%1$s %2$s§r."
 command-usage-parent:      "Использование: §l§b/%1$s <команда> [параметры]§r."
 command-usage-parent-hint: "Введите §l§b/%1$s help§r чтобы получить список доступных команд."
-#allowlist-update-pending:  "Allowlist update transaction pending, stand by."
 allowlist-update-pending:  "Выполняется обновление белого списка, ожидайте."

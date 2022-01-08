@@ -29,7 +29,7 @@ jobs:
       with:
         arguments: build
     - name: List
-      run: ls
+      run: ls build/libs/
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:

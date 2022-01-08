@@ -9,6 +9,7 @@ import land.altea.allowdb.AllowDbPlugin;
 import land.altea.allowdb.config.Config;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
+import land.altea.allowdb.storage.exception.NotOnListException;
 import land.altea.allowdb.storage.exception.StorageException;
 import land.altea.allowdb.storage.model.AllowRecord;
 import land.altea.allowdb.util.MojangAPI;
@@ -18,11 +19,16 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 public final class AllowList {
     private final @NotNull ConnectionSource conn;
     private final @NotNull Dao<AllowRecord, UUID> dao;
+    private final @NotNull ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public AllowList() {
         JdbcPooledConnectionSource conn;
@@ -83,33 +89,34 @@ public final class AllowList {
         }
     }
 
-    public void add(@NotNull UUID uuid) throws StorageException, NoSuchProfileException, AlreadyAllowedException {
-        String nickname = MojangAPI.getNickname(uuid);
-        if (nickname == null) {
-            throw new NoSuchProfileException();
-        }
-
-        try {
-            createRecord(uuid, nickname);
-        } catch (StorageException e) {
-            if (e.getCause() != null && e.getCause() instanceof SQLIntegrityConstraintViolationException) {
-                throw new AlreadyAllowedException();
+    public CompletableFuture<Void> add(@NotNull UUID uuid) {
+        return CompletableFuture.runAsync(() -> {
+            String nickname = MojangAPI.getNickname(uuid);
+            if (nickname == null) {
+                throw new CompletionException(new NoSuchProfileException());
             }
-            throw new StorageException("Failed to create allow record.", e);
-        }
+
+            try {
+                createRecord(uuid, nickname);
+            } catch (StorageException | AlreadyAllowedException e) {
+                throw new CompletionException(e);
+            }
+        }, executor);
     }
 
-    public void add(@NotNull String nickname) throws StorageException, NoSuchProfileException, AlreadyAllowedException {
-        UUID uuid = MojangAPI.getUuid(nickname);
-        if (uuid == null) {
-            throw new NoSuchProfileException();
-        }
+    public CompletableFuture<Void> add(@NotNull String nickname) {
+        return CompletableFuture.runAsync(() -> {
+            UUID uuid = MojangAPI.getUuid(nickname);
+            if (uuid == null) {
+                throw new CompletionException(new NoSuchProfileException());
+            }
 
-        try {
-            createRecord(uuid, nickname);
-        } catch (StorageException e) {
-            throw new StorageException("Failed to add player to allowlist.", e);
-        }
+            try {
+                createRecord(uuid, nickname);
+            } catch (StorageException | AlreadyAllowedException e) {
+                throw new CompletionException(e);
+            }
+        }, executor);
     }
 
     private void createRecord(@NotNull UUID uuid, @NotNull String nickname) throws StorageException, AlreadyAllowedException {
@@ -132,31 +139,34 @@ public final class AllowList {
         }
     }
 
-    public void remove(@NotNull UUID uuid) throws StorageException, NoSuchProfileException {
-        try {
-            if (dao.deleteById(uuid) == 0) {
-                throw new NoSuchProfileException();
+    public CompletableFuture<Void> remove(@NotNull UUID uuid) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                if (dao.deleteById(uuid) == 0) {
+                    throw new CompletionException(new NotOnListException());
+                }
+            } catch (SQLException e) {
+                throw new CompletionException(new StorageException("Failed to remove allow entry.", e));
             }
-        } catch (SQLException e) {
-            throw new StorageException("Failed to remove allow entry.", e);
-        }
+        }, executor);
     }
 
-    public void remove(@NotNull String nickname) throws StorageException, NoSuchProfileException {
+    public CompletableFuture<Void> remove(@NotNull String nickname) {
         Player player = AllowDbPlugin.getInstance().getServer().getOnlinePlayers().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(nickname)).findFirst().orElse(null);
 
-        UUID uuid;
-        if (player == null) {
-            uuid = MojangAPI.getUuid(nickname);
-            if (uuid == null) {
-                throw new NoSuchProfileException();
+        return CompletableFuture.runAsync(() -> {
+            UUID uuid;
+            if (player == null) {
+                uuid = MojangAPI.getUuid(nickname);
+                if (uuid == null) {
+                    throw new CompletionException(new NoSuchProfileException());
+                }
+            } else {
+                uuid = player.getUniqueId();
             }
 
-        } else {
-            uuid = player.getUniqueId();
-        }
-
-        remove(uuid);
+            remove(uuid).join();
+        });
     }
 }

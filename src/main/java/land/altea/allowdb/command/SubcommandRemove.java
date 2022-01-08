@@ -7,6 +7,7 @@ import land.altea.allowdb.command.exception.InvalidUsageException;
 import land.altea.allowdb.command.util.CommandUtil;
 import land.altea.allowdb.config.Messages;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
+import land.altea.allowdb.storage.exception.NotOnListException;
 import land.altea.allowdb.storage.exception.StorageException;
 import land.altea.allowdb.util.UuidUtil;
 import org.bukkit.command.CommandSender;
@@ -21,27 +22,37 @@ public final class SubcommandRemove implements CommandHandler {
         CommandUtil.requireNArgs(args, 1);
 
         try {
-            try {
-                UUID uuid = UuidUtil.parseLeniently(args[0]);
-
-                try {
-                    AllowDB.remove(uuid);
+            UUID uuid = UuidUtil.parseLeniently(args[0]);
+            AllowDB.remove(uuid).whenComplete((unused, e) -> AllowDbPlugin.getInstance().getServer().getScheduler().runTask(AllowDbPlugin.getInstance(), () -> {
+                if (e == null) {
                     sender.sendMessage(String.format(Messages.getPlayerUuidRemoved(), args[0]));
-                } catch (NoSuchProfileException e) {
-                    sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidNotOnList(), args[0])));
+                } else {
+                    if (e.getCause() instanceof StorageException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getInternalStorageError(), args[0])));
+                    } else if (e.getCause() instanceof NoSuchProfileException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidNonexistent(), args[0])));
+                    } else if (e.getCause() instanceof NotOnListException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidNotOnList(), args[0])));
+                    }
                 }
-            } catch (IllegalArgumentException e) {
-                try {
-                    AllowDB.remove(args[0]);
+            }));
+        } catch (IllegalArgumentException ignored) {
+            AllowDB.remove(args[0]).whenComplete((unused, e) -> AllowDbPlugin.getInstance().getServer().getScheduler().runTask(AllowDbPlugin.getInstance(), () -> {
+                if (e == null) {
                     sender.sendMessage(String.format(Messages.getPlayerNickRemoved(), args[0]));
-                } catch (NoSuchProfileException ex) {
-                    sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickNotOnList(), args[0])));
+                } else {
+                    if (e.getCause() instanceof StorageException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getInternalStorageError(), args[0])));
+                    } else if (e.getCause() instanceof NoSuchProfileException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickNonexistent(), args[0])));
+                    } else if (e.getCause() instanceof NotOnListException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickNotOnList(), args[0])));
+                    }
                 }
-            }
-
-        } catch (StorageException e) {
-            sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getInternalStorageError(), args[0])));
+            }));
         }
+
+        sender.sendMessage(Messages.getAllowlistUpdatePending());
     }
 
     @Override

@@ -30,6 +30,7 @@ public final class MessagesConfig {
     private final @NotNull String commandUsageNoArgs;
     private final @NotNull String commandUsageParent;
     private final @NotNull String commandUsageParentHint;
+    private final @NotNull String allowlistUpdatePending;
 
     public MessagesConfig(@NotNull FileConfiguration conf) throws BadConfigException {
         try {
@@ -56,6 +57,7 @@ public final class MessagesConfig {
             this.commandUsageNoArgs = Objects.requireNonNull(conf.getString("command-usage-no-args"));
             this.commandUsageParent = Objects.requireNonNull(conf.getString("command-usage-parent"));
             this.commandUsageParentHint = Objects.requireNonNull(conf.getString("command-usage-parent-hint"));
+            this.allowlistUpdatePending = Objects.requireNonNull(conf.getString("allowlist-update-pending"));
             Messages.init(this);
         } catch (NullPointerException e) {
             throw new BadConfigException(e);
@@ -152,5 +154,9 @@ public final class MessagesConfig {
 
     public @NotNull String getCommandUsageParentHint() {
         return commandUsageParentHint;
+    }
+
+    public @NotNull String getAllowlistUpdatePending() {
+        return allowlistUpdatePending;
     }
 }

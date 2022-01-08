@@ -32,10 +32,6 @@ public final class AllowDbPlugin extends JavaPlugin {
         I = this;
 
         reloadConfig();
-        if (isEnabled()) {
-            // todo: this is a hack, need to make something fancier than this
-            return;
-        }
 
         LoggerFactory.setLogBackendFactory(LogBackendType.NULL);
         list = new AllowList();
@@ -79,11 +75,6 @@ public final class AllowDbPlugin extends JavaPlugin {
     public void reload() {
         list.close();
         reloadConfig();
-        if (!isEnabled()) {
-            // todo: this is a hack, need to make something fancier than this
-            return;
-        }
-
         list = new AllowList();
 
         AllowDB.init(list);

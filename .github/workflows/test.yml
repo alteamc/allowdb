@@ -9,9 +9,15 @@ name: Test PRs to develop
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop ]    
+    paths:
+      - '**.java'
+      - '*.gradle.kts'
   pull_request:
     branches: [ develop ]
+    paths:
+      - '**.java'
+      - '*.gradle.kts'
 
 jobs:
   build:

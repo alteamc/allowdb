@@ -1,5 +1,5 @@
 package land.altea.allowdb.command.exception;
 
-public class InvalidUsageException extends Exception {
+public final class InvalidUsageException extends Exception {
 
 }

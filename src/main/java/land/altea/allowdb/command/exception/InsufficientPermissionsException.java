@@ -1,5 +1,5 @@
 package land.altea.allowdb.command.exception;
 
-public class InsufficientPermissionsException extends Exception {
+public final class InsufficientPermissionsException extends Exception {
 
 }

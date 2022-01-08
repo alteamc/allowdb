@@ -67,6 +67,9 @@ AllowDB provides `/adb reload` command for reloading configuration from disk and
 AllowDB has clear and concise permission nodes for every command as well as wildcard permissions for full access to
 every command (`allowdb.command.*` and `allowdb.*`.)
 
+However, you will still need `allowdb.command` permission (note that it *does not* end with `.*`) for players to use any
+of `/adb` commands (and for it to appear in command list when you type it.)
+
 | Command       | Permission node          |
 |---------------|--------------------------|
 | `/adb add`    | `allowdb.command.add`    |

@@ -131,12 +131,14 @@ public final class AllowList {
         }
     }
 
-    public boolean isAllowed(@NotNull Player player) throws StorageException {
-        try {
-            return dao.idExists(player.getUniqueId());
-        } catch (SQLException e) {
-            throw new StorageException("Failed to query allow entry.", e);
-        }
+    public CompletableFuture<Boolean> isAllowed(@NotNull Player player) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return dao.idExists(player.getUniqueId());
+            } catch (SQLException e) {
+                throw new CompletionException(new StorageException("Failed to query allow entry.", e));
+            }
+        });
     }
 
     public CompletableFuture<Void> remove(@NotNull UUID uuid) {
@@ -167,6 +169,6 @@ public final class AllowList {
             }
 
             remove(uuid).join();
-        });
+        }, executor);
     }
 }

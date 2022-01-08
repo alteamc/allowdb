@@ -1,8 +1,6 @@
 package land.altea.allowdb;
 
 import land.altea.allowdb.storage.AllowList;
-import land.altea.allowdb.storage.exception.NoSuchProfileException;
-import land.altea.allowdb.storage.exception.StorageException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +26,7 @@ public final class AllowDB {
         return allowList.add(nickname);
     }
 
-    public static boolean isAllowed(@NotNull Player player) throws StorageException {
+    public static CompletableFuture<Boolean> isAllowed(@NotNull Player player) {
         return allowList.isAllowed(player);
     }
 

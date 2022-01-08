@@ -1,5 +1,6 @@
 package land.altea.allowdb.config;
 
+import land.altea.allowdb.config.exception.BadConfigException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,32 +31,35 @@ public final class MessagesConfig {
     private final @NotNull String commandUsageParent;
     private final @NotNull String commandUsageParentHint;
 
-    public MessagesConfig(@NotNull FileConfiguration conf) {
-        this.errorMessageFormat = Objects.requireNonNull(conf.getString("error-message-format"));
-        this.accountLookupFailure = Objects.requireNonNull(conf.getString("account-lookup-failure"));
-        this.playerUuidAdded = Objects.requireNonNull(conf.getString("player-uuid-added"));
-        this.playerUuidRemoved = Objects.requireNonNull(conf.getString("player-uuid-removed"));
-        this.playerUuidNotOnList = Objects.requireNonNull(conf.getString("player-uuid-not-on-list"));
-        this.playerUuidNonexistent = Objects.requireNonNull(conf.getString("player-uuid-nonexistent"));
-        this.playerUuidAlreadyAdded = Objects.requireNonNull(conf.getString("player-uuid-already-added"));
-        this.playerNickAdded = Objects.requireNonNull(conf.getString("player-nick-added"));
-        this.playerNickRemoved = Objects.requireNonNull(conf.getString("player-nick-removed"));
-        this.playerNickNotOnList = Objects.requireNonNull(conf.getString("player-nick-not-on-list"));
-        this.playerNickNonexistent = Objects.requireNonNull(conf.getString("player-nick-nonexistent"));
-        this.playerNickAlreadyAdded = Objects.requireNonNull(conf.getString("player-nick-already-added"));
-        this.internalStorageError = Objects.requireNonNull(conf.getString("internal-storage-error"));
-        this.subcommandAddUsage = Objects.requireNonNull(conf.getString("subcommand-add-usage"));
-        this.subcommandRemoveUsage = Objects.requireNonNull(conf.getString("subcommand-remove-usage"));
-        this.availableCommands = Objects.requireNonNull(conf.getString("available-commands"));
-        this.configDbReloaded = Objects.requireNonNull(conf.getString("config-db-reloaded"));
-        this.reloadFailed = Objects.requireNonNull(conf.getString("reload-failed"));
-        this.insufficientPermissions = Objects.requireNonNull(conf.getString("insufficient-permissions"));
-        this.commandUsageArgs = Objects.requireNonNull(conf.getString("command-usage-args"));
-        this.commandUsageNoArgs = Objects.requireNonNull(conf.getString("command-usage-no-args"));
-        this.commandUsageParent = Objects.requireNonNull(conf.getString("command-usage-parent"));
-        this.commandUsageParentHint = Objects.requireNonNull(conf.getString("command-usage-parent-hint"));
-
-        Messages.init(this);
+    public MessagesConfig(@NotNull FileConfiguration conf) throws BadConfigException {
+        try {
+            this.errorMessageFormat = Objects.requireNonNull(conf.getString("error-message-format"));
+            this.accountLookupFailure = Objects.requireNonNull(conf.getString("account-lookup-failure"));
+            this.playerUuidAdded = Objects.requireNonNull(conf.getString("player-uuid-added"));
+            this.playerUuidRemoved = Objects.requireNonNull(conf.getString("player-uuid-removed"));
+            this.playerUuidNotOnList = Objects.requireNonNull(conf.getString("player-uuid-not-on-list"));
+            this.playerUuidNonexistent = Objects.requireNonNull(conf.getString("player-uuid-nonexistent"));
+            this.playerUuidAlreadyAdded = Objects.requireNonNull(conf.getString("player-uuid-already-added"));
+            this.playerNickAdded = Objects.requireNonNull(conf.getString("player-nick-added"));
+            this.playerNickRemoved = Objects.requireNonNull(conf.getString("player-nick-removed"));
+            this.playerNickNotOnList = Objects.requireNonNull(conf.getString("player-nick-not-on-list"));
+            this.playerNickNonexistent = Objects.requireNonNull(conf.getString("player-nick-nonexistent"));
+            this.playerNickAlreadyAdded = Objects.requireNonNull(conf.getString("player-nick-already-added"));
+            this.internalStorageError = Objects.requireNonNull(conf.getString("internal-storage-error"));
+            this.subcommandAddUsage = Objects.requireNonNull(conf.getString("subcommand-add-usage"));
+            this.subcommandRemoveUsage = Objects.requireNonNull(conf.getString("subcommand-remove-usage"));
+            this.availableCommands = Objects.requireNonNull(conf.getString("available-commands"));
+            this.configDbReloaded = Objects.requireNonNull(conf.getString("config-db-reloaded"));
+            this.reloadFailed = Objects.requireNonNull(conf.getString("reload-failed"));
+            this.insufficientPermissions = Objects.requireNonNull(conf.getString("insufficient-permissions"));
+            this.commandUsageArgs = Objects.requireNonNull(conf.getString("command-usage-args"));
+            this.commandUsageNoArgs = Objects.requireNonNull(conf.getString("command-usage-no-args"));
+            this.commandUsageParent = Objects.requireNonNull(conf.getString("command-usage-parent"));
+            this.commandUsageParentHint = Objects.requireNonNull(conf.getString("command-usage-parent-hint"));
+            Messages.init(this);
+        } catch (NullPointerException e) {
+            throw new BadConfigException(e);
+        }
     }
 
     public @NotNull String getErrorMessageFormat() {

@@ -7,6 +7,7 @@ import land.altea.allowdb.config.Config;
 import land.altea.allowdb.config.Messages;
 import land.altea.allowdb.config.MessagesConfig;
 import land.altea.allowdb.config.PluginConfig;
+import land.altea.allowdb.config.exception.BadConfigException;
 import land.altea.allowdb.listener.LoginListener;
 import land.altea.allowdb.storage.AllowList;
 import org.bukkit.command.PluginCommand;
@@ -31,6 +32,11 @@ public final class AllowDbPlugin extends JavaPlugin {
         I = this;
 
         reloadConfig();
+        if (isEnabled()) {
+            // todo: this is a hack, need to make something fancier than this
+            return;
+        }
+
         LoggerFactory.setLogBackendFactory(LogBackendType.NULL);
         list = new AllowList();
 
@@ -56,18 +62,28 @@ public final class AllowDbPlugin extends JavaPlugin {
     public void reloadConfig() {
         saveDefaultConfig();
         super.reloadConfig();
-        Config.init(new PluginConfig(getConfig()));
 
-        try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getResource("messages_" + Config.getLocale() + ".yml")))) {
-            Messages.init(new MessagesConfig(YamlConfiguration.loadConfiguration(reader)));
-        } catch (IOException e) {
-            getLogger().log(Level.SEVERE, "Failed to load messages file.", e);
+        try {
+            Config.init(new PluginConfig(getConfig()));
+            try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(getResource("messages_" + Config.getLocale() + ".yml")))) {
+                Messages.init(new MessagesConfig(YamlConfiguration.loadConfiguration(reader)));
+            } catch (IOException e) {
+                throw new BadConfigException("Failed to load messages file.", e);
+            }
+        } catch (BadConfigException e) {
+            getLogger().log(Level.SEVERE, "Failed to load configuration files.", e);
+            getServer().getPluginManager().disablePlugin(this);
         }
     }
 
     public void reload() {
         list.close();
         reloadConfig();
+        if (!isEnabled()) {
+            // todo: this is a hack, need to make something fancier than this
+            return;
+        }
+
         list = new AllowList();
 
         AllowDB.init(list);

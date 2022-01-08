@@ -6,7 +6,6 @@ import land.altea.allowdb.command.exception.InsufficientPermissionsException;
 import land.altea.allowdb.command.exception.InvalidUsageException;
 import land.altea.allowdb.command.util.CommandUtil;
 import land.altea.allowdb.config.Messages;
-import land.altea.allowdb.storage.AllowList;
 import land.altea.allowdb.storage.exception.AlreadyAllowedException;
 import land.altea.allowdb.storage.exception.NoSuchProfileException;
 import land.altea.allowdb.storage.exception.StorageException;
@@ -23,31 +22,37 @@ public final class SubcommandAdd implements CommandHandler {
         CommandUtil.requireNArgs(args, 1);
 
         try {
-            try {
-                UUID uuid = UuidUtil.parseLeniently(args[0]);
-
-                try {
-                    AllowDB.add(uuid);
+            UUID uuid = UuidUtil.parseLeniently(args[0]);
+            AllowDB.add(uuid).whenComplete((unused, e) -> AllowDbPlugin.getInstance().getServer().getScheduler().runTask(AllowDbPlugin.getInstance(), () -> {
+                if (e == null) {
                     sender.sendMessage(String.format(Messages.getPlayerUuidAdded(), args[0]));
-                } catch (NoSuchProfileException e) {
-                    sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidNonexistent(), args[0])));
-                } catch (AlreadyAllowedException e) {
-                    sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidAlreadyAdded(), args[0])));
+                } else {
+                    if (e.getCause() instanceof StorageException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getInternalStorageError(), args[0])));
+                    } else if (e.getCause() instanceof NoSuchProfileException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidNonexistent(), args[0])));
+                    } else if (e.getCause() instanceof AlreadyAllowedException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerUuidAlreadyAdded(), args[0])));
+                    }
                 }
-            } catch (IllegalArgumentException e) {
-                try {
-                    AllowDB.add(args[0]);
-                    sender.sendMessage(String.format(Messages.getPlayerNickAdded(), args[0]));
-                } catch (NoSuchProfileException ex) {
-                    sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickNonexistent(), args[0])));
-                } catch (AlreadyAllowedException ex) {
-                    sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickAlreadyAdded(), args[0])));
+            }));
+        } catch (IllegalArgumentException ignored) {
+            AllowDB.add(args[0]).whenComplete((unused, e) -> AllowDbPlugin.getInstance().getServer().getScheduler().runTask(AllowDbPlugin.getInstance(), () -> {
+                if (e == null) {
+                    sender.sendMessage(String.format(Messages.getPlayerUuidAdded(), args[0]));
+                } else {
+                    if (e.getCause() instanceof StorageException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getInternalStorageError(), args[0])));
+                    } else if (e.getCause() instanceof NoSuchProfileException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickNonexistent(), args[0])));
+                    } else if (e.getCause() instanceof AlreadyAllowedException) {
+                        sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getPlayerNickAlreadyAdded(), args[0])));
+                    }
                 }
-            }
-
-        } catch (StorageException e) {
-            sender.sendMessage(String.format(Messages.getErrorMessageFormat(), String.format(Messages.getInternalStorageError(), args[0])));
+            }));
         }
+
+        sender.sendMessage(Messages.getAllowlistUpdatePending());
     }
 
     @Override

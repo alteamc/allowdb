@@ -127,4 +127,9 @@ public final class Messages {
     public static String getCommandUsageParentHint() {
         return messagesConfig.getCommandUsageParentHint();
     }
+
+    @NotNull
+    public static String getAllowlistUpdatePending() {
+        return messagesConfig.getAllowlistUpdatePending();
+    }
 }

@@ -3,6 +3,7 @@ package land.altea.allowdb.storage;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import land.altea.allowdb.AllowDbPlugin;
@@ -154,21 +155,16 @@ public final class AllowList {
     }
 
     public CompletableFuture<Void> remove(@NotNull String nickname) {
-        Player player = AllowDbPlugin.getInstance().getServer().getOnlinePlayers().stream()
-                .filter(p -> p.getName().equalsIgnoreCase(nickname)).findFirst().orElse(null);
-
         return CompletableFuture.runAsync(() -> {
-            UUID uuid;
-            if (player == null) {
-                uuid = MojangAPI.getUuid(nickname);
-                if (uuid == null) {
-                    throw new CompletionException(new NoSuchProfileException());
+            try {
+                DeleteBuilder<AllowRecord, UUID> delete = dao.deleteBuilder();
+                delete.where().eq("username", nickname);
+                if (delete.delete() == 0) {
+                    throw new CompletionException(new NotOnListException());
                 }
-            } else {
-                uuid = player.getUniqueId();
+            } catch (SQLException e) {
+                throw new CompletionException(new StorageException("Failed to remove allow entry.", e));
             }
-
-            remove(uuid).join();
         }, executor);
     }
 }

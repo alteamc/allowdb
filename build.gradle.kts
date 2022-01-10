@@ -12,7 +12,7 @@ plugins {
 
 group = "land.altea"
 description = "MySQL-powered allowlists for your server."
-version = "1.2"
+version = "1.2.1"
 
 repositories {
     mavenCentral()

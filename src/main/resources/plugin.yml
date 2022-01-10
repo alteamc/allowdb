@@ -1,5 +1,5 @@
 name:    "AllowDB"
-version: "1.0.0"
+version: "1.2.1"
 main:    "land.altea.allowdb.AllowDbPlugin"
 
 description: "MySQL-powered allowlists for your server."

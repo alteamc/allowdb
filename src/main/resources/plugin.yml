@@ -41,4 +41,3 @@ commands:
     aliases:           [ adb, whitelist ]
     description:        "Manage AllowDB configuration and allowlist."
     permission:         "allowdb.command"
-    permission-message: "§4You don't have a permission to do that."

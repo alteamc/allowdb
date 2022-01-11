@@ -40,6 +40,7 @@ public final class AllowDbPlugin extends JavaPlugin {
         CommandAllowDb executor = new CommandAllowDb();
         command.setExecutor(executor);
         command.setTabCompleter(executor);
+        command.setPermissionMessage(Messages.getInsufficientPermissions());
 
         getServer().getPluginManager().registerEvents(new LoginListener(), this);
 

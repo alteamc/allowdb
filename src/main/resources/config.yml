@@ -1,7 +1,23 @@
+###############################################
+#            AllowDB configuration            #
+###############################################
+
+# Select message file that will be used by AllowDB in command responses.
+# Currently supported locales:
+#   - ru (Russian)
+#   - en (English)
 locale: en
 
+# Configure MySQL storage parameters.
+# URL must be in the following format:
+#
+#   jdbc:mysql://USER:PASSWORD:@HOST:PORT/DATABASE
+#
+# Note that if your username or password includes non-alphanumeric characters
+# you should URL-encode it.
 storage:
   url: 'jdbc:mysql://user:password@127.0.0.1:3306/allows'
 
+# Configure message shown to players not allowed in.
 messages:
   not-listed: §4You are not on the allowlist.

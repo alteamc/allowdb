@@ -24,7 +24,7 @@
 
 ### Locale
 
-Currently AllowDB ships with two locales bundled: English (`en`) and Russian (`en`.)
+Currently AllowDB ships with two locales bundled: English (`en`) and Russian (`ru`.)
 
 For creating/editing locales see [creating/editing locales](#creatingediting-locales) section.
 

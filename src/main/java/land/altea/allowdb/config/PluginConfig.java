@@ -16,7 +16,6 @@ public final class PluginConfig {
             this.locale = Objects.requireNonNull(conf.getString("locale"));
             this.storageUrl = Objects.requireNonNull(conf.getString("storage.url"));
             this.messageNotListed = Objects.requireNonNull(conf.getString("messages.not-listed"));
-            Config.init(this);
         } catch (NullPointerException e) {
             throw new BadConfigException(e);
         }

@@ -58,7 +58,6 @@ public final class MessagesConfig {
             this.commandUsageParent = Objects.requireNonNull(conf.getString("command-usage-parent"));
             this.commandUsageParentHint = Objects.requireNonNull(conf.getString("command-usage-parent-hint"));
             this.allowlistUpdatePending = Objects.requireNonNull(conf.getString("allowlist-update-pending"));
-            Messages.init(this);
         } catch (NullPointerException e) {
             throw new BadConfigException(e);
         }
